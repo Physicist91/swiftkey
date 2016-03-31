@@ -1,0 +1,108 @@
+---
+title: "Exploratory Analysis"
+author: "Kevin Siswandi"
+date: "19 March 2016"
+output: html_document
+---
+
+#Overview
+In this report, an exploratory analysis of the three datasets in English language, namely en_US.blogs.txt, en_US.twitter.txt and en_US.news.txt, is performed. The analysis includes basic summaries of the three datasets and frequency count in the form of wordcloud and histogram. Packages used in this report are tm, wordcloud, RColorBrewer, NLP, and SnowballC (required by tm).
+
+
+#Getting data
+
+For the purpose of reproducibility, all codes used to produce this report will be presented. The data have been downloaded into the paths below and are loaded using both the 'scan' and 'readLines' functions.
+
+```{r, warning=FALSE}
+#store as character
+blog.char <- scan("/Users/kevins/swiftkey/final/en_US/en_US.blogs.txt", what="character")
+tweet.char <- scan("/Users/kevins/swiftkey/final/en_US/en_US.twitter.txt", what="character")
+news.char <- scan("/Users/kevins/swiftkey/final/en_US/en_US.news.txt", what="character")
+
+#store as list of lines
+blog.con <- file("/Users/kevins/swiftkey/final/en_US/en_US.blogs.txt", "r")
+blog.lines <- readLines(blog.con)
+tweet.con <- file("/Users/kevins/swiftkey/final/en_US/en_US.twitter.txt", "r")
+tweet.lines <- readLines(tweet.con)
+news.con <- file("/Users/kevins/swiftkey/final/en_US/en_US.news.txt", "r")
+news.lines <- readLines(news.con)
+```
+
+#Basic summaries: word count, line count, and basic tables.
+
+A basic summary statistics about the test data are combined into a dataframe and reported as follows.
+
+```{r, warning=FALSE}
+blog.summary <- c(length(blog.char), length(blog.lines))
+tweet.summary <- c(length(tweet.char), length(tweet.lines))
+news.summary <- c(length(news.char), length(news.lines))
+summaries <- rbind(blog.summary, tweet.summary, news.summary)
+colnames(summaries) <- c("nwords", "nlines")
+summaries
+```
+
+#Reducing memory usage
+
+Moving forward, as the data size is big, only a subset of 10,000 lines (randomly sampled) will be used.
+```{r}
+rm(blog.char, tweet.char, news.char)
+
+blog.lines <- sample(blog.lines, 10000)
+tweet.lines <- sample(tweet.lines, 10000)
+news.lines <- sample(news.lines, 10000)
+
+combined.data <- c(blog.lines, tweet.lines, news.lines)
+```
+
+#Wordcloud
+
+One way to illustrate the basic features of a text data/corpus is by constructing a wordcloud. Preprocessing required before plotting the wordcloud:
+
+* removing punctuations
+* converting all letters to lowercase
+* word stemming, i.e. reducing every word to its stem form.
+* removing stopwords (e.g. a, an, be)
+* strip extra whitespaces by collapsing multiple consecutive whitespaces to a single whitespace.
+
+```{r, warning=FALSE}
+library(NLP)
+library(tm)
+library(RColorBrewer)
+library(wordcloud)
+
+#processing to remove punctuation, stopwords, and perform stemming.
+combined.data <- removePunctuation(combined.data)
+combined.data <- tolower(combined.data)
+combined.data <- stemDocument(combined.data)
+combined.data <- removeWords(combined.data, words=c('the', stopwords("english")))
+combined.data <- stripWhitespace(combined.data)
+
+wordcloud(combined.data, max.words=100, random.order=FALSE, rot.per=0.5, colors=brewer.pal(8, 'Accent'))
+```
+
+#Histogram
+
+For the purpose of prediction, a histogram plot of bigram frequencies will be more useful than wordcloud as it gives quantitative information on the frequencies. The ngrams function from the package 'NLP' is used to tokenize the corpus into bigrams.
+
+```{r}
+#Further processing on the corpus before tokenization
+combined.data <- paste0(unlist(combined.data), collapse=" ")
+combined.data <- strsplit(combined.data, " ", fixed=TRUE)[[1L]]
+combined.data <- combined.data[combined.data != ""]
+
+#Tokenizing into bigrams
+bigrams <- vapply(ngrams(combined.data, 2L), paste, "", collapse=" ")
+
+#Get the 5 most frequent bigrams
+top5 <- sort(table(bigrams), decreasing=T)[1:5]
+
+barplot(top5)
+```
+
+#Plan for the project
+A basic text prediction model based on N-gram will be employed. The N-gram model allows one to predict the last word of a sequence of N words given the previous (N-1) words. Given the limitation of hardware and time, a trigram model will likely be chosen to compute the relative frequency of an observed particular three-word sequence to its (two-word) prefix. In other words, the plan is to build a matrix/table of probabilities of trigram counts and make prediction (i.e. the word with the highest probability given the preceding two words) based on the table.
+
+**********
+
+> THANK YOU FOR READING THIS FAR.
+> ALL THE BEST FOR THE PROJECT!!
