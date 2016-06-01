@@ -3,6 +3,7 @@ library(tm)
 library(filehash)
 library(tau)
 library(foreach)
+library(dplyr)
 
 # create a permanent corpus on disk in the training directory
 myCorpus <- PCorpus(DirSource("training3", encoding = 'UTF-8', mode='text'),
@@ -51,16 +52,16 @@ for(step in 1:N){
   df_trigram <- data.frame(Trigram = names(trigram), count=unclass(trigram))
   df_trigram$Trigram <- as.character(df_trigram$Trigram)
   df_trigram$count <- as.numeric(df_trigram$count)
-  fof_trigram <- table(df_trigram$count)
+  #fof_trigram <- table(df_trigram$count)
   
   cat("Iteration", step, "\n")
   
   write.csv(df_trigram, file=paste0("df_trigram_", step, ".csv"), row.names=FALSE)
-  write.csv(fof_trigram, file=paste0("fof_trigram_", step, ".csv"))
+  #write.csv(fof_trigram, file=paste0("fof_trigram_", step, ".csv"))
   
   CORPUS <- CORPUS[-(1:10000)]
 }
-rm(CORPUS, df_trigram, fof_trigram, trigram)
+rm(CORPUS, df_trigram, trigram)
 df_trigram <- foreach(step=1:N, .combine=rbind) %do% { #aggregating the csv's into one file
   
   df <- read.csv(paste0("df_trigram_", step, ".csv"))
@@ -69,7 +70,15 @@ df_trigram <- foreach(step=1:N, .combine=rbind) %do% { #aggregating the csv's in
   
   df
 }
+rm(df)
+df_trigram <- df_trigram %>%
+  group_by(Trigram) %>%
+  summarise(count = sum(count))
+fof_trigram <- table(df_trigram$count)
 write.csv(df_trigram, file='df_trigram.csv')
+write.csv(fof_trigram, file='fof_trigram.csv')
 for(i in 1:N) {file.remove(paste0("df_trigram_", i, ".csv"))}
+#for(i in 1:N) {file.remove(paste0("fof_trigram_", i, ".csv"))}
+rm(fof_trigram)
 
 

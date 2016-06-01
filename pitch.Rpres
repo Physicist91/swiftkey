@@ -1,7 +1,7 @@
 Pitch
 ========================================================
 author: Kevin S. (https://sg.linkedin.com/in/kevinsiswandi)
-date: 
+date: June, 2016
 
 Product Lifecycle
 ========================================================
@@ -19,18 +19,20 @@ Analytic components
 ========================================================
 
 Goal                                             | Solution
--------------------------------------------------|---------------------------------------------------------------
+-------------------------------------------------|---------------------------------------------------------------------------
 Avoid storing the entire training data in memory | Created a permanent corpus on disk from the (raw) textual data
 Predict the next word based on the past N words  | Created data frames (stored on disk) of trigrams, bigrams, and unigrams.
+Predict unseen N-grams                           | Employ Katz backoff method
 
 
 
-Slide With Plot
+Critical product decisions
 ========================================================
 
-```{r, echo=FALSE}
-plot(cars)
-```
+1. Only the blogs data in the English language are used to train the model. Different text sources have different styles of speech and I prefer to keep the style particular to one source.
+2. Only trigrams are used in the final model, as the unigrams and bigrams are already contained within the trigrams.
+3. Single-count Trigrams (many of which may not be meaningful) are discarded to reduce the data size and Katz backoff method are used to predict unseen n-grams.
+
 
 Slide With Plot
 ========================================================
