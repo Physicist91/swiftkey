@@ -10,7 +10,7 @@ This data product was created and refined through iterative processes with the f
 
 - Getting and cleaning the data
 - Exploratory analysis
-- Using N-gram model to build a next-word prediction framework
+- Using N-gram model to build a word prediction framework
 - Developing a predictive text application in shiny
 
 The source code of the product can be found here: https://github.com/Physicist91/swiftkey
@@ -20,8 +20,9 @@ Analytic components
 
 Goal                                             | Solution
 -------------------------------------------------|---------------------------------------------------------------------------
-Avoid storing the entire training data in memory | Created a permanent corpus on disk from the (raw) textual data
-Predict the next word based on the past N words  | Created data frames (stored on disk) of trigrams, bigrams, and unigrams.
+To avoid storing the entire training data in memory  | Created a permanent corpus on disk from the (raw) textual data
+To transform the data into the right structure for analysis | Cleaned the data prior to N-gram tokenization by various transformations on the corpus.
+To have a word dictionary from which the N-gram can be referenced  | Created tables of trigrams, bigrams, and unigrams from the raw corpus.
 Predict unseen N-grams                           | Employ Katz backoff method
 
 
@@ -29,21 +30,15 @@ Predict unseen N-grams                           | Employ Katz backoff method
 Critical product decisions
 ========================================================
 
-1. Only the blogs data in the English language are used to train the model. Different text sources have different styles of speech and I prefer to keep the style particular to one source.
+1. Only the blogs data in the English language are used to train the model. Different text sources have different styles of English and I prefer to keep the style particular to one source.
 2. Only trigrams are used in the final model, as the unigrams and bigrams are already contained within the trigrams.
-3. Single-count Trigrams (many of which may not be meaningful) are discarded to reduce the data size and Katz backoff method are used to predict unseen n-grams.
+3. Single-count trigrams (many of which may not be meaningful) are discarded to reduce the data size and Katz backoff method are applied to predict unseen n-grams.
 
 
-Slide With Plot
+The shiny app
 ========================================================
 
 ```{r, echo=FALSE}
 plot(cars)
 ```
 
-Slide With Plot
-========================================================
-
-```{r, echo=FALSE}
-plot(cars)
-```

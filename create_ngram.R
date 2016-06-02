@@ -75,7 +75,7 @@ df_trigram <- df_trigram %>%
   group_by(Trigram) %>%
   summarise(count = sum(count))
 fof_trigram <- table(df_trigram$count)
-write.csv(df_trigram, file='df_trigram.csv')
+write.csv(df_trigram, file='df_trigram.csv', row.names=FALSE)
 write.csv(fof_trigram, file='fof_trigram.csv')
 for(i in 1:N) {file.remove(paste0("df_trigram_", i, ".csv"))}
 #for(i in 1:N) {file.remove(paste0("fof_trigram_", i, ".csv"))}
