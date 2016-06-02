@@ -1,18 +1,32 @@
 library(shiny)
 
 shinyUI(fluidPage(
-  titlePanel('Coursera Capstone: Next-word Prediction App'),
   
-  fluidRow(
-    column(3, textInput("text", label=h3('Text Input'), value='Enter a sentence...')),
-    column(3, h4('Next-word suggestion:'), verbatimTextOutput("prediction"))
+  titlePanel('Just A Word Prediction App'),
+  
+  
+  sidebarLayout(
+    
+    # Sidebar with a text input
+    sidebarPanel(
+      textInput("text", label=h3('Text Input'), value='Enter at least two words...'),
+      h5('You typed:'),
+      verbatimTextOutput('value')
+    ),
+    
+    # Show the prediction
+    mainPanel(
+      h4('Top suggestions:'),
+      verbatimTextOutput("prediction")
+    )
   ),
   
   hr(),
+  
   fluidRow(
-      column(3, verbatimTextOutput('value'))
-  ),
-  actionButton("goButton", "Predict!"),
-  fluidRow(column(3, h4('Please be patient after hitting the button as the text preprocessing is slow, ~10mins')))
+    column(2, h5('Created by', strong('Kevin Siswandi'), '.'),
+            h5('https://sg.linkedin.com/in/kevinsiswandi'))
+  )
+  
 
 ))
