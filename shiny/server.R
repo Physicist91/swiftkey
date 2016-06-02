@@ -1,47 +1,36 @@
 library(shiny)
-library(NLP)
-library(tm)
 
-predict.ngram <- function(pattern, trigrams) {
-  matching <- grep(pattern, trigrams, ignore.case=TRUE)
-  if(length(matching) == 0)
-      top5 <- 'the'
-  else if(length(matching) < 5)
-      top5 <- sort(table(matching), decreasing=T)[1:length(matching)]
-  else
-    top5 <- sort(table(matching), decreasing=T)[1:5]
+df_trigram <- read.csv("df_trigram_final.csv", stringsAsFactors = FALSE)
+
+
+
+predict_word <- function(x) {
   
-  top5
+  x <- tolower(x)
+  x <- gsub("[^[:alnum:][:space:]]", " ", x)
+  splitted <- unlist(strsplit(x, split=" "))
+  
+  N <- length(splitted)
+  
+  subdata1 <- df_trigram[df_trigram$word2 == splitted[N],]
+  subdata2 <- subdata1[subdata1$word1 == splitted[N-1],]
+  
+  if(nrow(subdata2) > 0)
+    predicted <- subdata2[order(subdata2$count, decreasing=TRUE), "word3"]
+  else if (nrow(subdata1 > 0))
+    predicted <- subdata1[order(subdata1$count, decreasing=TRUE), "word3"]
+  else
+    predicted <- 'kimbek'
+  
+  predicted[1:3]
 }
 
 shinyServer(
   function(input, output){
+    
     output$value <- renderPrint({ input$text })
-    output$prediction <- renderPrint({
-        if(input$goButton == 1){
-            withProgress(message='Computing the next word:', value=0, {
-                
-                incProgress(0.25, detail='Loading text files...')
-                tweet.con <- file("en_US.twitter.txt", "r")
-                combined.data <- readLines(tweet.con)
-                close(tweet.con)
-                
-                incProgress(0.25, detail = 'Preprocessing corpus...')
-                combined.data <- removePunctuation(combined.data)
-                combined.data <- tolower(combined.data)
-                combined.data <- stripWhitespace(combined.data)
-                
-                incProgress(0.25, detail='Creating 3-grams...')
-                combined.data <- strsplit(combined.data, " ", fixed=TRUE)
-                trigrams <- sapply(combined.data, ngrams, 3L)
-                trigrams <- vapply(trigrams, paste, "", collapse=" ")
-                
-                incProgress(0.25, detail='Getting your top suggestions...')
-                x <- predict.ngram(input$text, trigrams)
-            })
-            x[1]
-        }
+    output$prediction <- renderPrint({predict_word(input$text)})
         
-      })
-      })
+  }
+)
   
