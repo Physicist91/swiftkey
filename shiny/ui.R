@@ -1,7 +1,8 @@
 library(shiny)
+library(shinythemes)
 
 shinyUI(fluidPage(
-  
+  theme=shinytheme('cosmo'),
   titlePanel('Just A Word Prediction App'),
   
   
