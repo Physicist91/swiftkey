@@ -20,9 +20,14 @@ predict_word <- function(x) {
   else if (nrow(subdata1 > 0))
     predicted <- subdata1[order(subdata1$count, decreasing=TRUE), "word3"]
   else
-    predicted <- 'kimbek'
+    predicted <- 'the'
   
-  predicted[1:3]
+  predicted <- na.omit(predicted)
+  
+  if(length(predicted) >= 3)
+    predicted[1:3]
+  else
+    predicted[1:length(predicted)]
 }
 
 shinyServer(
