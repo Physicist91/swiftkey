@@ -10,7 +10,7 @@ shinyUI(fluidPage(
     
     # Sidebar with a text input
     sidebarPanel(
-      textInput("text", label=h3('Text Input'), value='Enter at least two words...'),
+      textInput("text", label=h3('Text Input'), placeholder='Enter at least two words'),
       h5('You typed:'),
       verbatimTextOutput('value')
     ),
