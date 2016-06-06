@@ -20,25 +20,31 @@ Analytic components
 
 Goal                                             | Solution
 -------------------------------------------------|---------------------------------------------------------------------------
-To avoid storing the entire training data in memory  | Created a permanent corpus on disk from the (raw) textual data
+To avoid storing the entire training data in memory for preprocessing the corpus | Created a permanent corpus on disk from the (raw) textual data
 To transform the data into the right structure for analysis | Cleaned the data prior to N-gram tokenization by various transformations on the corpus.
-To have a word dictionary from which the N-gram can be referenced  | Created tables of trigrams, bigrams, and unigrams from the raw corpus.
-Predict unseen N-grams                           | Employ Katz backoff method
+To have a word dictionary from which the N-grams can be referenced  | Created tables of trigrams, bigrams, and unigrams from the raw corpus.
+To predict the next word given a sentence/phrase | Sort matching *N-1* grams by descending count and output the top three.
+To handle unseen N-grams                           | Employ Katz backoff method to fall back to lower grams.
 
 
 
 Critical product decisions
 ========================================================
 
-1. Only the blogs data in the English language are used to train the model. Different text sources have different styles of English and I prefer to keep the style particular to one source.
+1. To capture a particular style of English, the blogs data in the English language are used to train the model. However, the model is completely general and can be used to train different text sources with little/no modifications.
 2. Only trigrams are used in the final model, as the unigrams and bigrams are already contained within the trigrams.
-3. Single-count trigrams (many of which may not be meaningful) are discarded to reduce the data size and Katz backoff method are applied to predict unseen n-grams.
+3. Single-count trigrams (many of which may not be meaningful) are discarded to reduce the data size.
+4. End-of-sentence markers are encoded to discard N-grams spanning multiple sentences.
 
 
 The shiny app
 ========================================================
 
-```{r, echo=FALSE}
-plot(cars)
-```
+**Put link here**
+Note: the app was hosted on a free shinyapps.io and loading the app/refresh may take a few seconds to a minute.
 
+FEATURES:
+
+* Simple: just enter a phrase/sentence; it just works.
+* Fast: near-instantaneous results.
+* Lightweight: minimum amount of RAM and processing power.
