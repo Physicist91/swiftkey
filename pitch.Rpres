@@ -23,8 +23,8 @@ Goal                                             | Solution
 To avoid storing the entire training data in memory for preprocessing the corpus | Created a permanent corpus on disk from the (raw) textual data
 To transform the data into the right structure for analysis | Cleaned the data prior to N-gram tokenization by various transformations on the corpus.
 To have a word dictionary from which the N-grams can be referenced  | Created tables of trigrams, bigrams, and unigrams from the raw corpus.
-To predict the next word given a sentence/phrase | Sort matching *N-1* grams by descending count and output the top three.
-To handle unseen N-grams                           | Employ Katz backoff method to fall back to lower grams.
+To predict the next word given a sentence/phrase | Take the last N words, sort matching *N-1* grams by descending count and output the top three.
+To handle unseen N-grams                           | Employ backoff method to fall back to lower grams.
 
 
 
@@ -40,7 +40,8 @@ Critical product decisions
 The shiny app
 ========================================================
 
-**Put link here**
+https://kevinsis.shinyapps.io/wordapp/
+
 Note: the app was hosted on a free shinyapps.io and loading the app/refresh may take a few seconds to a minute.
 
 FEATURES:
