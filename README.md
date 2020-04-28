@@ -2,4 +2,6 @@
 
 In this project, I used R to build a next-word prediction app based on the N-gram model.
 
-Reference: https://datascisg.wordpress.com/2016/04/09/text-analytics/
+See also:
+* Presentation on RPubs -- https://rpubs.com/kevinsis/capstone_pitch
+* The app hosted on shinyapps.io -- https://kevinsis.shinyapps.io/wordapp/
