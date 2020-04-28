@@ -1,4 +1,4 @@
-# swiftkey
+# Predictive Text Application with R Shiny
 
 In this project, I used R to build a next-word prediction app based on the N-gram model.
 
